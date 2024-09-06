@@ -1,0 +1,162 @@
+/**
+ * Collects ISIS LSDB data for hname, router-id, and ipv4-ext-prefix till the specified TLV value
+ */
+ healthbot {
+    topic routing.isis {
+        rule collect-isis-lsdb-tlv {
+            keys [ instance-name protocol-name level-num lsp-id tlv-value ];
+            synopsis "Collects ISIS hname,router-id,ipv4-ext-prefix from LSDB";
+            description "Collects LSDB path periodically till tlv-value node as key";
+            sensor isis-oc {
+            	synopsis "ISIS open-config sensor definition";
+                description "Open-config sensor to collect telemetry data from network device";
+                open-config {
+                    sensor-name /network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/;
+                    frequency 60s;
+                }
+            }
+            sensor isis-oc-junos {
+            	synopsis "ISIS open-config sensor definition";
+                description "Open-config sensor to collect telemetry data from network device";
+                open-config {
+                    sensor-name /network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/;
+                    frequency 60s;
+                }
+            }			
+            field instance-name {
+                sensor isis-oc {
+                    where "/network-instances/network-instance/@name =~ /{{inst-name}}/";
+                    path "/network-instances/network-instance/@name";
+                }
+                sensor isis-oc-junos {
+                    where "/network-instances/network-instance/@name =~ /{{inst-name}}/";
+                    path "/network-instances/network-instance/@name";
+                }
+                type string;
+                description "instance-name from the lsdb path";
+            }
+            field protocol-name {
+                sensor isis-oc {
+                    where "/network-instances/network-instance/protocols/protocol/@identifier=~/{{proto-name}}/";
+                    path "/network-instances/network-instance/protocols/protocol/@identifier";
+                }
+                sensor isis-oc-junos {
+                    where "/network-instances/network-instance/protocols/protocol/@identifier=~/{{proto-name}}/";
+                    path "/network-instances/network-instance/protocols/protocol/@identifier";
+                }	
+                type string;
+                description "protocol-name from the lsdb path";
+            }
+            field level-num {
+                sensor isis-oc {
+                    where "/network-instances/network-instance/protocols/protocol/isis/levels/level/@level-number=~/{{level-numb}}/";
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/@level-number";
+                }
+                sensor isis-oc-junos {
+                    where "/network-instances/network-instance/protocols/protocol/isis/levels/level/@level-number=~/{{level-numb}}/";
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/@level-number";
+                }
+                type string;
+                description "level-number from the lsdb path";
+            }
+            field tlv-value {
+                sensor isis-oc {
+                    where "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/@type=~/{{tlv-val}}/";
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/@type";
+                }
+                sensor isis-oc-junos {
+                    where "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/@type=~/{{tlv-val}}/";
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/@type";
+                }
+                type string;
+                description "tlv-type from the lsdb path";
+            }
+            field lsp-id {
+                sensor isis-oc {
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/@lsp-id";
+                }
+                sensor isis-oc-junos {
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/@lsp-id";
+                }
+                type string;
+                description "lsp-id from the lsdb path";
+            }
+            field hname {
+                sensor isis-oc {
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/hostname/state/hname";
+                }
+                sensor isis-oc-junos {
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/hostname/state/hostname";
+                }
+                type string;
+                description "hname from the lsdb path";
+            }
+            field router-id {
+                sensor isis-oc {
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/ipv4-te-router-id/state/te-router-id";
+                }
+                sensor isis-oc-junos {
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/ipv4-te-router-id/state/te-router-id";
+                }
+                type string;
+                description "router-id from the lsdb path";
+            }
+            field ipv4-ext-prefix {
+                sensor isis-oc {
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/extended-ipv4-reachability/prefixes/prefix/state/prefix";
+                }
+                sensor isis-oc-junos {
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/extended-ipv4-reachability/prefixes/prefix/state/prefix";
+                }
+                type string;
+                description "ipv4-ext-prefix from the lsdb path";
+            }
+            variable inst-name {
+                value .*;
+                description "Enter a regular expression to match the instance name, e.g., 'master|RI1'";
+                type string;
+            }
+            variable proto-name {
+                value .*;
+                description "Enter a regular expression to match the protocol name, e.g., 'isis' or 'ospf'";
+                type string;
+            }
+            variable level-numb {
+                value .*;
+                description "Enter a regular expression to match the level number, e.g., '1', '2', or '3'";
+                type string;
+            }
+            variable tlv-val {
+                value .*;
+                description "Enter a regular expression to match the TLV value";
+                type string;
+            }
+            rule-properties {
+                version 1;
+                contributor juniper;
+                supported-healthbot-version 4.3.0;
+                supported-devices {
+                    sensors isis-oc;
+                    juniper {
+                        operating-system junos {
+                            sensors isis-oc-junos;						
+                            products MX {
+                                sensors isis-oc-junos;
+                                platforms MX960 {
+                                   releases 23.4R1 {
+                                        sensors isis-oc-junos;
+                                        release-support min-supported-release;
+                                    }
+                                    releases 20.2R1 {
+                                        sensors isis-oc;
+                                        release-support min-supported-release;
+                                    }
+                                }								
+                            }
+                        }					
+                    }
+                }
+            }
+        }
+    }
+}

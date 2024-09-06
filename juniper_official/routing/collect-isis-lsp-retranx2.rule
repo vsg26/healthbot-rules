@@ -1,0 +1,97 @@
+/*
+ * Collects ISIS interface data for LSP-retransmit till interface-id for release >=23.2R2
+ */
+ healthbot {
+    topic routing.isis {
+        rule collect-isis-lsp-retranx2 {
+            keys [ instance-name protocol-name interface-id level-num ];
+            synopsis "collects ISIS LSP-retransmit";
+            description "Collects interface path periodically till interface-id node as key";
+            sensor isis-oc {
+            	synopsis "ISIS open-config sensor definition";
+                description "Open-config sensor to collect telemetry data from network device";
+                open-config {
+                    sensor-name /network-instances/network-instance/protocols/protocol/isis/interfaces/interface/;
+                    frequency 60s;
+                }
+            }			
+            field instance-name {
+                sensor isis-oc {
+                    where "/network-instances/network-instance/@name =~ /{{inst-name}}/";
+                    path "/network-instances/network-instance/@name";
+                }			
+                type string;
+                description "instance-name from the interface path";
+            }
+            field protocol-name {
+                sensor isis-oc {
+                    where "/network-instances/network-instance/protocols/protocol/@identifier=~/{{proto-name}}/";
+                    path "/network-instances/network-instance/protocols/protocol/@identifier";
+                }			
+                type string;
+                description "protocol-name from the interface path";
+            }
+            field interface-id {
+                sensor isis-oc {
+                    where "/network-instances/network-instance/protocols/protocol/isis/interfaces/interface/@interface-id =~ /{{interface-name}}/";
+                    path "/network-instances/network-instance/protocols/protocol/isis/interfaces/interface/@interface-id";
+                }
+                type string;
+                description "interface-id from the interface path";
+            }
+            field level-num {
+                sensor isis-oc {
+                    where "/network-instances/network-instance/protocols/protocol/isis/interfaces/interface/levels/level/@level-number =~ /{{level-numb}}/";
+                    path "/network-instances/network-instance/protocols/protocol/isis/interfaces/interface/levels/level/@level-number";
+                }
+                type string;
+                description "level-number from the interface path";
+            }
+            field lsp-retranx {
+                sensor isis-oc {
+                    path "/network-instances/network-instance/protocols/protocol/isis/interfaces/interface/levels/level/packet-counters/lsp/state/retransmit";
+                }
+                type string;
+                description "LSP-retransmit from the interface path";
+            }
+            variable inst-name {
+                value .*;
+                description "Enter a regular expression to match the instance name, e.g., 'master|RI1'";
+                type string;
+            }
+            variable proto-name {
+                value .*;
+                description "Enter a regular expression to match the protocol name, e.g., 'isis' or 'ospf'";
+                type string;
+            }
+            variable interface-name {
+                value .*;
+                description "Enter interface name in regex i.e. ge-.* ";
+                type string;
+            }
+            variable level-numb {
+                value .*;
+                description "Enter a regular expression to match the level number, e.g., '1', '2', or '3'";
+                type string;
+            }
+            rule-properties {
+                version 1;
+                contributor juniper;
+                supported-healthbot-version 4.3.0;
+                supported-devices {
+                    juniper {
+                        operating-system junos {
+                            products MX {
+                                platforms MX960 {
+                                    releases 23.2R2 {
+                                        release-support min-supported-release;
+                                    }
+                                }					
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
