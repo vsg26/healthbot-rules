@@ -1,11 +1,11 @@
 /*
- * Collects ISIS interface data for LSP-retransmit till interface-id for release >=23.2R2
+ * Collects ISIS interface data for LSP-retransmit till interface-id for release <23.2R2
  * REQ: IGP RCA- https://paragon-automation.atlassian.net/browse/REQ-1349
  */
  healthbot {
     topic routing.isis {
-        rule collect-isis-lsp-retranx_232R2 {
-            keys [ instance-name interface-id level-number ];
+        rule collect-isis-lsp-retranx-222R3 {
+            keys [ instance-name interface-id ];
             synopsis "collects ISIS LSP-retransmit";
             description "Collects interface path periodically till interface-id node as key";
             sensor isis-oc {
@@ -32,17 +32,9 @@
                 type string;
                 description "interface-id from the interface path";
             }
-            field level-number {
-                sensor isis-oc {
-                    where "/network-instances/network-instance/protocols/protocol/isis/interfaces/interface/levels/level/@level-number =~ /{{level-numb}}/";
-                    path "/network-instances/network-instance/protocols/protocol/isis/interfaces/interface/levels/level/@level-number";
-                }
-                type string;
-                description "level-number from the interface path";
-            }
             field lsp-retransmit {
                 sensor isis-oc {
-                    path "/network-instances/network-instance/protocols/protocol/isis/interfaces/interface/levels/level/packet-counters/lsp/state/retransmit";
+                    path "/network-instances/network-instance/protocols/protocol/isis/interfaces/interface/packet-counters/lsp/state/retransmit";
                 }
                 type integer;
                 description "LSP-retransmit from the interface path";
@@ -57,11 +49,6 @@
                 description "Enter interface name in regex i.e. ge-.* ";
                 type string;
             }
-            variable level-number {
-                value .*;
-                description "Enter a regular expression to match the level number, e.g., '1', '2', or '3'";
-                type string;
-            }
             rule-properties {
                 version 1;
                 contributor juniper;
@@ -71,7 +58,7 @@
                         operating-system junos {
                             products MX {
                                 platforms MX960 {
-                                    releases 23.2R2 {
+                                    releases 22.2R3 {
                                         release-support min-supported-release;
                                     }
                                 }					
