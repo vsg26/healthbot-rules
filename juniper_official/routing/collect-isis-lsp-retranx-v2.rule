@@ -4,7 +4,7 @@
  */
  healthbot {
     topic routing.isis {
-        rule collect-isis-lsp-retranx-232R2 {
+        rule collect-isis-lsp-retranx-v2 {
             keys [ instance-name interface-id level-number ];
             synopsis "collects ISIS LSP-retransmit";
             description "Collects interface path periodically till interface-id node as key";
