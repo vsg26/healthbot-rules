@@ -4,7 +4,7 @@
  */
  healthbot {
     topic routing.isis {
-        rule collect-isis-lsdb-neighbsysid-223R1 {
+        rule collect-isis-lsdb-neighbsysid-v2 {
             keys [ instance-name level-number lsp-id tlv-type neighbor-system-id instance-id ];
             synopsis "collects ISIS state_metric for each of the links";
             description "Collects LSDB path periodically till neighbor-sysid node as key";
