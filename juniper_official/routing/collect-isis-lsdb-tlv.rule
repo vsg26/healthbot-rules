@@ -1,10 +1,11 @@
 /**
- * Collects ISIS LSDB data for hname, router-id, and ipv4-ext-prefix till the specified TLV value
+ * Collects ISIS LSDB data for hname, router-id, and ipv4-ext-prefix till the specified TLV type
+ * REQ: IGP RCA- https://paragon-automation.atlassian.net/browse/REQ-1349
  */
  healthbot {
     topic routing.isis {
         rule collect-isis-lsdb-tlv {
-            keys [ instance-name protocol-name level-num lsp-id tlv-value ];
+            keys [ instance-name level-number lsp-id tlv-type ];
             synopsis "Collects ISIS hname,router-id,ipv4-ext-prefix from LSDB";
             description "Collects LSDB path periodically till tlv-value node as key";
             sensor isis-oc {
@@ -35,37 +36,25 @@
                 type string;
                 description "instance-name from the lsdb path";
             }
-            field protocol-name {
+            field level-number {
                 sensor isis-oc {
-                    where "/network-instances/network-instance/protocols/protocol/@identifier=~/{{proto-name}}/";
-                    path "/network-instances/network-instance/protocols/protocol/@identifier";
-                }
-                sensor isis-oc-junos {
-                    where "/network-instances/network-instance/protocols/protocol/@identifier=~/{{proto-name}}/";
-                    path "/network-instances/network-instance/protocols/protocol/@identifier";
-                }	
-                type string;
-                description "protocol-name from the lsdb path";
-            }
-            field level-num {
-                sensor isis-oc {
-                    where "/network-instances/network-instance/protocols/protocol/isis/levels/level/@level-number=~/{{level-numb}}/";
+                    where "/network-instances/network-instance/protocols/protocol/isis/levels/level/@level-number=~/{{level-number}}/";
                     path "/network-instances/network-instance/protocols/protocol/isis/levels/level/@level-number";
                 }
                 sensor isis-oc-junos {
-                    where "/network-instances/network-instance/protocols/protocol/isis/levels/level/@level-number=~/{{level-numb}}/";
+                    where "/network-instances/network-instance/protocols/protocol/isis/levels/level/@level-number=~/{{level-number}}/";
                     path "/network-instances/network-instance/protocols/protocol/isis/levels/level/@level-number";
                 }
                 type string;
                 description "level-number from the lsdb path";
             }
-            field tlv-value {
+            field tlv-type {
                 sensor isis-oc {
-                    where "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/@type=~/{{tlv-val}}/";
+                    where "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/@type=~/{{tlv-type}}/";
                     path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/@type";
                 }
                 sensor isis-oc-junos {
-                    where "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/@type=~/{{tlv-val}}/";
+                    where "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/@type=~/{{tlv-type}}/";
                     path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/@type";
                 }
                 type string;
@@ -81,7 +70,7 @@
                 type string;
                 description "lsp-id from the lsdb path";
             }
-            field hname {
+            field hostname {
                 sensor isis-oc {
                     path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/hostname/state/hname";
                 }
@@ -116,17 +105,12 @@
                 description "Enter a regular expression to match the instance name, e.g., 'master|RI1'";
                 type string;
             }
-            variable proto-name {
-                value .*;
-                description "Enter a regular expression to match the protocol name, e.g., 'isis' or 'ospf'";
-                type string;
-            }
-            variable level-numb {
+            variable level-number {
                 value .*;
                 description "Enter a regular expression to match the level number, e.g., '1', '2', or '3'";
                 type string;
             }
-            variable tlv-val {
+            variable tlv-type {
                 value .*;
                 description "Enter a regular expression to match the TLV value";
                 type string;
@@ -134,7 +118,7 @@
             rule-properties {
                 version 1;
                 contributor juniper;
-                supported-healthbot-version 4.3.0;
+                supported-healthbot-version 2.3.0;
                 supported-devices {
                     sensors isis-oc;
                     juniper {

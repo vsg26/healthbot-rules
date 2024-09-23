@@ -1,13 +1,13 @@
 /*
- * Collects ISIS lsdb data for seq-num-skips and spf-runs till level-number
+ * Collects ISIS lsdb data till neighbor-sysid for metric values from releases between 20.2R1 and 22.2R3
  * REQ: IGP RCA- https://paragon-automation.atlassian.net/browse/REQ-1349
  */
  healthbot {
     topic routing.isis {
-        rule collect-isis-counters {
-            keys [ instance-name level-number ];
-            synopsis "collects ISIS seq-num-skips,spf-runs";
-            description "Collects LSDB path periodically till level-number node as key";
+        rule collect-isis-lsdb-neighbsysid_202R1_to_223R1 {
+            keys [ instance-name level-number lsp-id tlv-type neighbor-system-id ];
+            synopsis "collects ISIS state_metric for each of adjacent nodes";
+            description "Collects LSDB path periodically till neighbor-sysid node as key";
             sensor isis-oc {
             	synopsis "ISIS open-config sensor definition";
                 description "Open-config sensor to collect telemetry data from network device";
@@ -15,12 +15,12 @@
                     sensor-name /network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/;
                     frequency 60s;
                 }
-            }			
+            }
             field instance-name {
                 sensor isis-oc {
                     where "/network-instances/network-instance/@name =~ /{{inst-name}}/";
                     path "/network-instances/network-instance/@name";
-                }			
+                }	
                 type string;
                 description "instance-name from the lsdb path";
             }
@@ -32,19 +32,34 @@
                 type string;
                 description "level-number from the lsdb path";
             }
-            field spf-runs {
+            field tlv-type {
                 sensor isis-oc {
-                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/system-level-counters/state/spf-runs";
+                    where "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/@type=~/{{tlv-type}}/";
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/@type";
                 }
-                type integer;
-                description "lsp-install-time from the lsdb path";
+                type string;
+                description "tlv-type from the lsdb path";
             }
-            field seq-num-skips {
+            field state-metric {
                 sensor isis-oc {
-                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/system-level-counters/state/seq-num-skips";
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/extended-is-reachability/neighbors/neighbor/state/metric";
                 }
                 type integer;
-                description "lsp-sequence-number from the lsdb path";
+                description "state metric value from the lsdb path";
+            }
+            field lsp-id {
+                sensor isis-oc {
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/@lsp-id";
+                }
+                type string;
+                description "lsp-id from the lsdb path";
+            }
+            field neighbor-system-id {
+                sensor isis-oc {
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/extended-is-reachability/neighbors/neighbor/@system-id";
+                }
+                type string;
+                description "neighbor-sys-id from the lsdb path";
             }
             variable inst-name {
                 value .*;
@@ -54,6 +69,11 @@
             variable level-number {
                 value .*;
                 description "Enter a regular expression to match the level number, e.g., '1', '2', or '3'";
+                type string;
+            }
+            variable tlv-type {
+                value .*;
+                description "Enter a regular expression to match the TLV value";
                 type string;
             }
             rule-properties {

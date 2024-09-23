@@ -1,13 +1,13 @@
 /*
- * Collects ISIS LSDB data for prefix-sid value till sub-TLV
+ * Collects ISIS lsdb data till neighbor-sysid for metric values from releases >=22.3R1
  * REQ: IGP RCA- https://paragon-automation.atlassian.net/browse/REQ-1349
  */
  healthbot {
     topic routing.isis {
-        rule collect-isis-lsdb-subtlv {
-            keys [ instance-name level-number lsp-id tlv-type ipv4-ext-prefix subtlv-type ];
-            synopsis "collects ISIS prefix-sid-state-value for each of prefixes";
-            description "Collects LSDB path periodically till subtlv-value node as key";
+        rule collect-isis-lsdb-neighbsysid_223R1 {
+            keys [ instance-name level-number lsp-id tlv-type neighbor-system-id instance-id ];
+            synopsis "collects ISIS state_metric for each of the links";
+            description "Collects LSDB path periodically till neighbor-sysid node as key";
             sensor isis-oc {
             	synopsis "ISIS open-config sensor definition";
                 description "Open-config sensor to collect telemetry data from network device";
@@ -15,12 +15,12 @@
                     sensor-name /network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/;
                     frequency 60s;
                 }
-            }			
+            }
             field instance-name {
                 sensor isis-oc {
                     where "/network-instances/network-instance/@name =~ /{{inst-name}}/";
                     path "/network-instances/network-instance/@name";
-                }			
+                }	
                 type string;
                 description "instance-name from the lsdb path";
             }
@@ -40,13 +40,12 @@
                 type string;
                 description "tlv-type from the lsdb path";
             }
-            field subtlv-type {
+            field state-metric {
                 sensor isis-oc {
-                    where "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/extended-ipv4-reachability/prefixes/prefix/subtlvs/subtlv/@type=~/{{subtlv-type}}/";
-                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/extended-ipv4-reachability/prefixes/prefix/subtlvs/subtlv/@type";
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/extended-is-reachability/neighbors/neighbor/instances/instance/state/metric";
                 }
-                type string;
-                description "subtlv-type from the lsdb path";
+                type integer;
+                description "state metric value from the lsdb path";
             }
             field lsp-id {
                 sensor isis-oc {
@@ -55,19 +54,20 @@
                 type string;
                 description "lsp-id from the lsdb path";
             }
-            field ipv4-ext-prefix {
+            field neighbor-system-id {
                 sensor isis-oc {
-                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/extended-ipv4-reachability/prefixes/prefix/state/prefix";
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/extended-is-reachability/neighbors/neighbor/@system-id";
                 }
                 type string;
-                description "ipv4-ext-prefix from lsdb path";
+                description "neighbor-sys-id from the lsdb path";
             }
-            field prefix-sid-state-value {
+            field instance-id {
                 sensor isis-oc {
-                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/extended-ipv4-reachability/prefixes/prefix/subtlvs/subtlv/prefix-sids/prefix-sid/state/value";
+                    where "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/extended-is-reachability/neighbors/neighbor/instances/instance/@id=~/{{inst-id}}/";
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/extended-is-reachability/neighbors/neighbor/instances/instance/@id";
                 }
-                type integer;
-                description "prefix-sid-state-value from lsdb path";
+                type string;
+                description "instance-id from the lsdb path";
             }
             variable inst-name {
                 value .*;
@@ -84,9 +84,9 @@
                 description "Enter a regular expression to match the TLV value";
                 type string;
             }
-            variable subtlv-type {
+            variable inst-id {
                 value .*;
-                description "Enter a regular expression to match the Sub-TLV value";
+                description "Enter a regular expression to match the instance-id value";
                 type string;
             }
             rule-properties {
@@ -98,7 +98,7 @@
                         operating-system junos {
                             products MX {
                                 platforms MX960 {
-                                    releases 22.2R3 {
+                                    releases 22.3R1 {
                                         release-support min-supported-release;
                                     }
                                 }					

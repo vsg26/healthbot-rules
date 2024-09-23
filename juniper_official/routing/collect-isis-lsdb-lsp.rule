@@ -1,10 +1,11 @@
 /*
  * Collects LSDB data for lsp-install-time and lsp sequence number
+ * REQ: IGP RCA- https://paragon-automation.atlassian.net/browse/REQ-1349
  */
  healthbot {
     topic routing.isis {
         rule collect-isis-lsdb-lsp {
-            keys [ instance-name protocol-name level-numb lsp-id ];
+            keys [ instance-name level-number lsp-id ];
             synopsis "Collects ISIS lsp-intall-time,sequence-number";
             description "Collects LSDB path periodically till lsp node as key";
             sensor isis-oc {
@@ -23,17 +24,9 @@
                 type string;
                 description "instance-name from the lsdb path";
             }
-            field protocol-name {
+            field level-number {
                 sensor isis-oc {
-                    where "/network-instances/network-instance/protocols/protocol/@identifier=~/{{proto-name}}/";
-                    path "/network-instances/network-instance/protocols/protocol/@identifier";
-                }			
-                type string;
-                description "protocol-name from the lsdb path";
-            }
-            field level-numb {
-                sensor isis-oc {
-                    where "/network-instances/network-instance/protocols/protocol/isis/levels/level/@level-number=~/{{level-num}}/";
+                    where "/network-instances/network-instance/protocols/protocol/isis/levels/level/@level-number=~/{{level-number}}/";
                     path "/network-instances/network-instance/protocols/protocol/isis/levels/level/@level-number";
                 }
                 type string;
@@ -50,14 +43,14 @@
                 sensor isis-oc {
                     path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/state/lsp-install-time";
                 }
-                type string;
+                type unsigned-integer;
                 description "lsp-install-time from the lsdb path";
             }
             field sequence-number {
                 sensor isis-oc {
                     path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/state/sequence-number";
                 }
-                type string;
+                type integer;
                 description "lsp-sequence-number from the lsdb path";
             }
             variable inst-name {
@@ -65,20 +58,15 @@
                 description "Enter a regular expression to match the instance name, e.g.master ";
                 type string;
             }
-            variable level-num {
+            variable level-number {
                 value .*;
                 description "Enter a regular expression to match the level number, e.g., '1', '2', or '3' ";
-                type string;
-            }
-            variable proto-name {
-                value .*;
-                description "Enter a regular expression to match the protocol name, e.g., 'isis' or 'ospf' ";
                 type string;
             }
             rule-properties {
                 version 1;
                 contributor juniper;
-                supported-healthbot-version 4.3.0;
+                supported-healthbot-version 2.3.0;
                 supported-devices {
                     juniper {
                         operating-system junos {
