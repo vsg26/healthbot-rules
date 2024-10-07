@@ -89,9 +89,7 @@
                 description "Enter a regular expression to match the instance-id value";
                 type string;
             }
-            rule-->  >=22.3R1
-
-rule-properties {
+            rule-properties {
                 version 1;
                 contributor juniper;
                 supported-healthbot-version 2.3.0;
