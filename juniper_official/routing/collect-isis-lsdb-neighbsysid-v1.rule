@@ -1,6 +1,11 @@
 /*
- * Collects ISIS lsdb data till neighbor-sysid for metric values from releases between 20.2R1 and 22.2R3
+ * collect-isis-lsdb-neighbsysid-v1.rule
  * REQ: IGP RCA- https://paragon-automation.atlassian.net/browse/REQ-1349
+ * Collects ISIS lsdb data till neighbor-sysid for metric values from releases between 20.2R1 and 22.2R3
+ * This rule works for releases between 20.2R1 and 22.2R3
+ * Keys: [ instance-name level-number lsp-id tlv-type neighbor-system-id ]
+ * Note: For releases >=22.3R1, use collect-isis-lsdb-neighbsysid-v2.rule with keys [ instance-name level-number lsp-id tlv-type neighbor-system-id instance-id ]
+ * v1 and v2 versions are used for the following rules: collect-isis-lsp-retranx, collect-isis-lsdb-neighbsysid. These versions retrieve the same set of fields but vary in the number of keys.
  */
  healthbot {
     topic routing.isis {

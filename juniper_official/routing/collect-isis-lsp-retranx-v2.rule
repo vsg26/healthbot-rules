@@ -1,6 +1,11 @@
 /*
- * Collects ISIS interface data for LSP-retransmit till interface-id for release >=23.2R2
+ * collect-isis-lsp-retranx-v2.rule
  * REQ: IGP RCA- https://paragon-automation.atlassian.net/browse/REQ-1349
+ * Collects ISIS interface data for LSP-retransmit till level-number for release >=23.2R2
+ * This rule works for releases >=23.2R2
+ * Keys: [ instance-name interface-id level-number ]
+ * Note: For releases <23.2R2, use collect-isis-lsp-retranx-v1 with keys [ instance-name interface-id ]
+ * v1 and v2 versions are used for the following rules: collect-isis-lsp-retranx, collect-isis-lsdb-neighbsysid. These versions retrieve the same set of fields but vary in the number of keys.
  */
  healthbot {
     topic routing.isis {
