@@ -120,13 +120,126 @@
                 contributor juniper;
                 supported-healthbot-version 2.3.0;
                 supported-devices {
-                    sensors isis-oc;
                     juniper {
                         operating-system junos {
-                            sensors isis-oc-junos;						
                             products MX {
-                                sensors isis-oc-junos;
+                                platforms MX204 {
+                                   releases 23.4R1 {
+                                        sensors isis-oc-junos;
+                                        release-support min-supported-release;
+                                    }
+                                    releases 20.2R1 {
+                                        sensors isis-oc;
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms MX240 {
+                                   releases 23.4R1 {
+                                        sensors isis-oc-junos;
+                                        release-support min-supported-release;
+                                    }
+                                    releases 20.2R1 {
+                                        sensors isis-oc;
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms MX304 {
+                                   releases 23.4R1 {
+                                        sensors isis-oc-junos;
+                                        release-support min-supported-release;
+                                    }
+                                    releases 20.2R1 {
+                                        sensors isis-oc;
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms MX480 {
+                                   releases 23.4R1 {
+                                        sensors isis-oc-junos;
+                                        release-support min-supported-release;
+                                    }
+                                    releases 20.2R1 {
+                                        sensors isis-oc;
+                                        release-support min-supported-release;
+                                    }
+                                }
                                 platforms MX960 {
+                                   releases 23.4R1 {
+                                        sensors isis-oc-junos;
+                                        release-support min-supported-release;
+                                    }
+                                    releases 20.2R1 {
+                                        sensors isis-oc;
+                                        release-support min-supported-release;
+                                    }
+                                }
+                            }
+                        }
+                        operating-system junosEvolved {
+                            products ACX {
+                                platforms ACX7100-32C {
+                                   releases 23.4R1 {
+                                        sensors isis-oc-junos;
+                                        release-support min-supported-release;
+                                    }
+                                    releases 20.2R1 {
+                                        sensors isis-oc;
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms ACX7100-48L {
+                                   releases 23.4R1 {
+                                        sensors isis-oc-junos;
+                                        release-support min-supported-release;
+                                    }
+                                    releases 20.2R1 {
+                                        sensors isis-oc;
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms ACX7509 {
+                                   releases 23.4R1 {
+                                        sensors isis-oc-junos;
+                                        release-support min-supported-release;
+                                    }
+                                    releases 20.2R1 {
+                                        sensors isis-oc;
+                                        release-support min-supported-release;
+                                    }
+                                }
+                            }
+                            products PTX {
+                                platforms PTX10001-36MR {
+                                   releases 23.4R1 {
+                                        sensors isis-oc-junos;
+                                        release-support min-supported-release;
+                                    }
+                                    releases 20.2R1 {
+                                        sensors isis-oc;
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms PTX10004 {
+                                   releases 23.4R1 {
+                                        sensors isis-oc-junos;
+                                        release-support min-supported-release;
+                                    }
+                                    releases 20.2R1 {
+                                        sensors isis-oc;
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms PTX10008 {
+                                   releases 23.4R1 {
+                                        sensors isis-oc-junos;
+                                        release-support min-supported-release;
+                                    }
+                                    releases 20.2R1 {
+                                        sensors isis-oc;
+                                        release-support min-supported-release;
+                                    }
+                                }								
+                                platforms PTX10016 {
                                    releases 23.4R1 {
                                         sensors isis-oc-junos;
                                         release-support min-supported-release;
@@ -137,7 +250,7 @@
                                     }
                                 }								
                             }
-                        }					
+                        }
                     }
                 }
             }

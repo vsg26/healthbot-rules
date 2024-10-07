@@ -84,11 +84,45 @@
                     juniper {
                         operating-system junos {
                             products MX {
+                                platforms MX204 {
+                                    releases 22.2R3 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms MX240 {
+                                    releases 22.2R3 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms MX304 {
+                                    releases 22.2R3 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms MX480 {
+                                    releases 22.2R3 {
+                                        release-support min-supported-release;
+                                    }
+                                }
                                 platforms MX960 {
                                     releases 22.2R3 {
                                         release-support min-supported-release;
                                     }
-                                }					
+                                }
+                            }
+                        }
+                        operating-system junosEvolved {
+                            products PTX {
+                                platforms PTX10008 {
+                                    releases 22.2R3 {
+                                        release-support min-supported-release;
+                                    }
+                                }								
+                                platforms PTX10016 {
+                                    releases 22.2R3 {
+                                        release-support min-supported-release;
+                                    }
+                                }								
                             }
                         }
                     }
