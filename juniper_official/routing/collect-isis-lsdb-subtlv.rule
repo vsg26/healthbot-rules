@@ -1,0 +1,173 @@
+/*
+ * Collects ISIS LSDB data for prefix-sid value till sub-TLV
+ * REQ: IGP RCA- https://paragon-automation.atlassian.net/browse/REQ-1349
+ */
+ healthbot {
+    topic routing.isis {
+        rule collect-isis-lsdb-subtlv {
+            keys [ instance-name level-number lsp-id tlv-type ipv4-ext-prefix subtlv-type ];
+            synopsis "collects ISIS prefix-sid-state-value for each of prefixes";
+            description "Collects LSDB path periodically till subtlv-value node as key";
+            sensor isis-oc {
+            	synopsis "ISIS open-config sensor definition";
+                description "Open-config sensor to collect telemetry data from network device";
+                open-config {
+                    sensor-name /network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/;
+                    frequency 60s;
+                }
+            }			
+            field instance-name {
+                sensor isis-oc {
+                    where "/network-instances/network-instance/@name =~ /{{inst-name}}/";
+                    path "/network-instances/network-instance/@name";
+                }			
+                type string;
+                description "instance-name from the lsdb path";
+            }
+            field level-number {
+                sensor isis-oc {
+                    where "/network-instances/network-instance/protocols/protocol/isis/levels/level/@level-number=~/{{level-number}}/";
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/@level-number";
+                }
+                type string;
+                description "level-number from the lsdb path";
+            }
+            field tlv-type {
+                sensor isis-oc {
+                    where "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/@type=~/{{tlv-type}}/";
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/@type";
+                }
+                type string;
+                description "tlv-type from the lsdb path";
+            }
+            field subtlv-type {
+                sensor isis-oc {
+                    where "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/extended-ipv4-reachability/prefixes/prefix/subtlvs/subtlv/@type=~/{{subtlv-type}}/";
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/extended-ipv4-reachability/prefixes/prefix/subtlvs/subtlv/@type";
+                }
+                type string;
+                description "subtlv-type from the lsdb path";
+            }
+            field lsp-id {
+                sensor isis-oc {
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/@lsp-id";
+                }
+                type string;
+                description "lsp-id from the lsdb path";
+            }
+            field ipv4-ext-prefix {
+                sensor isis-oc {
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/extended-ipv4-reachability/prefixes/prefix/state/prefix";
+                }
+                type string;
+                description "ipv4-ext-prefix from lsdb path";
+            }
+            field prefix-sid-state-value {
+                sensor isis-oc {
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/extended-ipv4-reachability/prefixes/prefix/subtlvs/subtlv/prefix-sids/prefix-sid/state/value";
+                }
+                type integer;
+                description "prefix-sid-state-value from lsdb path";
+            }
+            variable inst-name {
+                value .*;
+                description "Enter a regular expression to match the instance name, e.g., 'master|RI1'";
+                type string;
+            }
+            variable level-number {
+                value .*;
+                description "Enter a regular expression to match the level number, e.g., '1', '2', or '3'";
+                type string;
+            }
+            variable tlv-type {
+                value .*;
+                description "Enter a regular expression to match the TLV value";
+                type string;
+            }
+            variable subtlv-type {
+                value .*;
+                description "Enter a regular expression to match the Sub-TLV value";
+                type string;
+            }
+            rule-properties {
+                version 1;
+                contributor juniper;
+                supported-healthbot-version 2.3.0;
+                supported-devices {
+                    juniper {
+                        operating-system junos {
+                            products MX {
+                                platforms MX204 {
+                                    releases 22.2R3 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms MX240 {
+                                    releases 23.2R2 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms MX304 {
+                                    releases 23.2R2 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms MX480 {
+                                    releases 23.2R2 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms MX960 {
+                                    releases 23.2R2 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                            }
+                        }
+                        operating-system junosEvolved {
+                            products ACX {
+                                platforms ACX7100-32C {
+                                    releases 23.2R2 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms ACX7100-48L {
+                                    releases 23.2R2 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms ACX7509 {
+                                    releases 23.2R2 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                            }
+                            products PTX {
+                                platforms PTX10001-36MR {
+                                    releases 23.2R2 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms PTX10004 {
+                                    releases 23.2R2 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms PTX10008 {
+                                    releases 23.2R2 {
+                                        release-support min-supported-release;
+                                    }
+                                }								
+                                platforms PTX10016 {
+                                    releases 23.2R2 {
+                                        release-support min-supported-release;
+                                    }
+                                }								
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

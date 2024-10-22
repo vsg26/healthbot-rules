@@ -1,0 +1,138 @@
+/*
+ * collect-isis-lsdb-neighbsysid-v1.rule
+ * REQ: IGP RCA- https://paragon-automation.atlassian.net/browse/REQ-1349
+ * Collects ISIS lsdb data till neighbor-sysid for metric values from releases between 20.2R1 and 22.2R3
+ * This rule works for releases between 20.2R1 and 22.2R3
+ * Keys: [ instance-name level-number lsp-id tlv-type neighbor-system-id ]
+ * Note: For releases >=22.3R1, use collect-isis-lsdb-neighbsysid-v2.rule with keys [ instance-name level-number lsp-id tlv-type neighbor-system-id instance-id ]
+ * v1 and v2 versions are used for the following rules: collect-isis-lsp-retranx, collect-isis-lsdb-neighbsysid. These versions retrieve the same set of fields but vary in the number of keys.
+ */
+ healthbot {
+    topic routing.isis {
+        rule collect-isis-lsdb-neighbsysid-v1 {
+            keys [ instance-name level-number lsp-id tlv-type neighbor-system-id ];
+            synopsis "collects ISIS state_metric for each of adjacent nodes";
+            description "Collects LSDB path periodically till neighbor-sysid node as key";
+            sensor isis-oc {
+            	synopsis "ISIS open-config sensor definition";
+                description "Open-config sensor to collect telemetry data from network device";
+                open-config {
+                    sensor-name /network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/;
+                    frequency 60s;
+                }
+            }
+            field instance-name {
+                sensor isis-oc {
+                    where "/network-instances/network-instance/@name =~ /{{inst-name}}/";
+                    path "/network-instances/network-instance/@name";
+                }	
+                type string;
+                description "instance-name from the lsdb path";
+            }
+            field level-number {
+                sensor isis-oc {
+                    where "/network-instances/network-instance/protocols/protocol/isis/levels/level/@level-number=~/{{level-number}}/";
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/@level-number";
+                }
+                type string;
+                description "level-number from the lsdb path";
+            }
+            field tlv-type {
+                sensor isis-oc {
+                    where "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/@type=~/{{tlv-type}}/";
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/@type";
+                }
+                type string;
+                description "tlv-type from the lsdb path";
+            }
+            field state-metric {
+                sensor isis-oc {
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/extended-is-reachability/neighbors/neighbor/state/metric";
+                }
+                type integer;
+                description "state metric value from the lsdb path";
+            }
+            field lsp-id {
+                sensor isis-oc {
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/@lsp-id";
+                }
+                type string;
+                description "lsp-id from the lsdb path";
+            }
+            field neighbor-system-id {
+                sensor isis-oc {
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/extended-is-reachability/neighbors/neighbor/@system-id";
+                }
+                type string;
+                description "neighbor-sys-id from the lsdb path";
+            }
+            variable inst-name {
+                value .*;
+                description "Enter a regular expression to match the instance name, e.g., 'master|RI1'";
+                type string;
+            }
+            variable level-number {
+                value .*;
+                description "Enter a regular expression to match the level number, e.g., '1', '2', or '3'";
+                type string;
+            }
+            variable tlv-type {
+                value .*;
+                description "Enter a regular expression to match the TLV value";
+                type string;
+            }
+            rule-properties {
+                version 1;
+                contributor juniper;
+                supported-healthbot-version 2.3.0;
+                supported-devices {
+                    juniper {
+                        operating-system junos {
+                            products MX {
+                                platforms MX204 {
+                                    releases 22.2R3 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms MX240 {
+                                    releases 22.2R3 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms MX304 {
+                                    releases 22.2R3 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms MX480 {
+                                    releases 22.2R3 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms MX960 {
+                                    releases 22.2R3 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                            }
+                        }
+                        operating-system junosEvolved {
+                            products PTX {
+                                platforms PTX10008 {
+                                    releases 22.2R3 {
+                                        release-support min-supported-release;
+                                    }
+                                }								
+                                platforms PTX10016 {
+                                    releases 22.2R3 {
+                                        release-support min-supported-release;
+                                    }
+                                }								
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

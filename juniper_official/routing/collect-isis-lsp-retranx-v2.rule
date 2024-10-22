@@ -1,0 +1,146 @@
+/*
+ * collect-isis-lsp-retranx-v2.rule
+ * REQ: IGP RCA- https://paragon-automation.atlassian.net/browse/REQ-1349
+ * Collects ISIS interface data for LSP-retransmit till level-number for release >=23.2R2
+ * This rule works for releases >=23.2R2
+ * Keys: [ instance-name interface-id level-number ]
+ * Note: For releases <23.2R2, use collect-isis-lsp-retranx-v1 with keys [ instance-name interface-id ]
+ * v1 and v2 versions are used for the following rules: collect-isis-lsp-retranx, collect-isis-lsdb-neighbsysid. These versions retrieve the same set of fields but vary in the number of keys.
+ */
+ healthbot {
+    topic routing.isis {
+        rule collect-isis-lsp-retranx-v2 {
+            keys [ instance-name interface-id level-number ];
+            synopsis "collects ISIS LSP-retransmit";
+            description "Collects interface path periodically till interface-id node as key";
+            sensor isis-oc {
+            	synopsis "ISIS open-config sensor definition";
+                description "Open-config sensor to collect telemetry data from network device";
+                open-config {
+                    sensor-name /network-instances/network-instance/protocols/protocol/isis/interfaces/interface/;
+                    frequency 60s;
+                }
+            }			
+            field instance-name {
+                sensor isis-oc {
+                    where "/network-instances/network-instance/@name =~ /{{inst-name}}/";
+                    path "/network-instances/network-instance/@name";
+                }			
+                type string;
+                description "instance-name from the interface path";
+            }
+            field interface-id {
+                sensor isis-oc {
+                    where "/network-instances/network-instance/protocols/protocol/isis/interfaces/interface/@interface-id =~ /{{interface-id}}/";
+                    path "/network-instances/network-instance/protocols/protocol/isis/interfaces/interface/@interface-id";
+                }
+                type string;
+                description "interface-id from the interface path";
+            }
+            field level-number {
+                sensor isis-oc {
+                    where "/network-instances/network-instance/protocols/protocol/isis/interfaces/interface/levels/level/@level-number =~ /{{level-numb}}/";
+                    path "/network-instances/network-instance/protocols/protocol/isis/interfaces/interface/levels/level/@level-number";
+                }
+                type string;
+                description "level-number from the interface path";
+            }
+            field lsp-retransmit {
+                sensor isis-oc {
+                    path "/network-instances/network-instance/protocols/protocol/isis/interfaces/interface/levels/level/packet-counters/lsp/state/retransmit";
+                }
+                type integer;
+                description "LSP-retransmit from the interface path";
+            }
+            variable inst-name {
+                value .*;
+                description "Enter a regular expression to match the instance name, e.g., 'master|RI1'";
+                type string;
+            }
+            variable interface-id {
+                value .*;
+                description "Enter interface name in regex i.e. ge-.* ";
+                type string;
+            }
+            variable level-number {
+                value .*;
+                description "Enter a regular expression to match the level number, e.g., '1', '2', or '3'";
+                type string;
+            }
+            rule-properties {
+                version 1;
+                contributor juniper;
+                supported-healthbot-version 2.3.0;
+                supported-devices {
+                    juniper {
+                        operating-system junos {
+                            products MX {
+                                platforms MX240 {
+                                    releases 23.2R2 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms MX304 {
+                                    releases 23.2R2 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms MX480 {
+                                    releases 23.2R2 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms MX960 {
+                                    releases 23.2R2 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                            }
+                        }
+                        operating-system junosEvolved {
+                            products ACX {
+                                platforms ACX7100-32C {
+                                    releases 23.2R2 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms ACX7100-48L {
+                                    releases 23.2R2 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms ACX7509 {
+                                    releases 23.2R2 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                            }
+                            products PTX {
+                                platforms PTX10001-36MR {
+                                    releases 23.2R2 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms PTX10004 {
+                                    releases 23.2R2 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms PTX10008 {
+                                    releases 23.2R2 {
+                                        release-support min-supported-release;
+                                    }
+                                }								
+                                platforms PTX10016 {
+                                    releases 23.2R2 {
+                                        release-support min-supported-release;
+                                    }
+                                }								
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
