@@ -1,0 +1,41 @@
+---
+Ospf3NeighborStatsTable:
+  rpc: get-ospf3-neighbor-information
+  args:
+    extensive: !!bool True
+    instance: all
+  item: ospf3-instance-neighbor/ospf3-realm-neighbor/ospf3-neighbor
+  key:
+    - interface-name
+    - neighbor-id
+    - neighbor-address
+    - ../../ospf-instance-name
+  view: Ospf3NeighborStatsView
+
+Ospf3NeighborStatsView:
+  fields:
+    ospf-neighbor-state: ospf-neighbor-state
+    instance-name: ../../ospf-instance-name
+
+xslt: "<xsl:stylesheet version=\"1.0\"
+ xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\"
+ xmlns:ns=\"some:ns\">
+ <xsl:output omit-xml-declaration=\"yes\" indent=\"yes\"/>
+ <xsl:strip-space elements=\"*\"/>
+ <ns:WhiteList>
+      <name>interface-name</name>
+      <name>neighbor-id</name>
+      <name>ospf-neighbor-state</name>
+      <name>neighbor-address</name>
+      <name>ospf-instance-name</name>
+ </ns:WhiteList>
+ <ns:blacklist>
+ </ns:blacklist>
+ <xsl:template match=\"node()|@*\">
+      <xsl:copy>
+             <xsl:apply-templates select=\"node()|@*\"/>
+      </xsl:copy>
+ </xsl:template>
+ <xsl:template match=
+  \"*[not(descendant-or-self::*[name()=document('')/*/ns:WhiteList/*]) or (self::*[name()=document('')/*/ns:blacklist/*])]\"/>
+ </xsl:stylesheet>"
