@@ -1,5 +1,6 @@
 /*
  * Monitors OSPF IPv6 neighbors status and notifies when state is not full.
+ * EOP requirements - REQ-1313
  */
  healthbot {
     topic routing.ospf {
@@ -132,47 +133,47 @@
                 supported-devices {
                     juniper {
                         operating-system junos {
-                            products ACX {
-                                platforms All {
-                                    releases 15.2R1 {
-                                        release-support min-supported-release;
-                                    }
-                                }
-                            }
-                            products EX {
-                                platforms All {
-                                    releases 15.2R1 {
-                                        release-support min-supported-release;
-                                    }
-                                }
-                            }
                             products MX {
-                                platforms All {
-                                    releases 11.4R1 {
+                                platforms MX204 {
+                                    releases 22.2R3 {
                                         release-support min-supported-release;
                                     }
                                 }
-                            }
-                            products PTX {
-                                platforms All {
-                                    releases 11.4R1 {
+                                platforms MX240 {
+                                    releases 22.2R3 {
+                                        release-support min-supported-release;
+                                    }
+                                }								
+                                platforms MX304 {
+                                    releases 22.2R3 {
                                         release-support min-supported-release;
                                     }
                                 }
-                            }
-                            products QFX {
-                                platforms All {
-                                    releases 15.2R1 {
+                                platforms MX480 {
+                                    releases 22.2R3 {
                                         release-support min-supported-release;
                                     }
                                 }
-                            }
-                            products SRX {
-                                platforms All {
-                                    releases 15.2R1 {
+                                platforms MX960 {
+                                    releases 22.2R3 {
+                                        release-support min-supported-release;
+                                    }
+                                }								
+                                platforms MX10004 {
+                                    releases 22.3R1 {
                                         release-support min-supported-release;
                                     }
                                 }
+                                platforms MX10008 {
+                                    releases 22.3R1 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms MX10016 {
+                                    releases 22.3R1 {
+                                        release-support min-supported-release;
+                                    }
+                                }								
                             }
                         }
                         operating-system junosEvolved {

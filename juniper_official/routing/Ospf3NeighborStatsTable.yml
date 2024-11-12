@@ -2,7 +2,6 @@
 Ospf3NeighborStatsTable:
   rpc: get-ospf3-neighbor-information
   args:
-    extensive: !!bool True
     instance: all
   item: ospf3-instance-neighbor/ospf3-realm-neighbor/ospf3-neighbor
   key:
