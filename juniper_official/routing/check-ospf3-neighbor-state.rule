@@ -1,0 +1,216 @@
+/*
+ * Monitors OSPF IPv6 neighbors status and notifies when state is not full.
+ * EOP requirements - REQ-1313
+ */
+ healthbot {
+    topic routing.ospf {
+        rule check-ospf3-neighbor-state {
+            keys [ interface-name neighbor-id instance-name neighbor-address ];
+            synopsis "OSPF IPv6 neighbor state analyzer";
+            description "Monitors the OSPF IPv6 neighbor states";
+            sensor ospf-neighbor-netconf {
+                synopsis "OSPF netcinf sensor definition";
+                description "Netconfig rpc get-ospf-neighbor-information iAgent sensor to collect telemetry data from network device";
+                iAgent {
+                    file Ospf3NeighborStatsTable.yml;
+                    table Ospf3NeighborStatsTable;
+                    frequency 180s;
+                }
+            }
+            field interface-name {
+                sensor ospf-neighbor-netconf {
+                    where "interface-name =~ /{{ospf-interface-name}}/";
+                    path interface-name;
+                }
+                type string;
+                description "Ospf interface name";
+            }
+            field instance-name {
+                sensor ospf-neighbor-netconf {
+                    where "instance-name =~ /{{instance-name}}/";
+                    path instance-name;
+                }
+                type string;
+                description "Ospf instance name";
+            }			
+            field neighbor-address {
+                sensor ospf-neighbor-netconf {
+                    where "neighbor-address =~ /{{ospf-neighbor-address}}/";				
+                    path neighbor-address;
+                }
+                type string;
+                description "Ospf neighbor address";
+            }
+            field neighbor-id {
+                sensor ospf-neighbor-netconf {
+                    where "neighbor-id =~ /{{ospf-neighbor-id}}/";
+                    path neighbor-id;
+                }
+                type string;
+                description "Ospf neighbor ID";
+            }
+            field ospf-neighbor-state {
+                sensor ospf-neighbor-netconf {
+                    path ospf-neighbor-state;
+                }
+                type string;
+                description "Ospf neighbor state";
+                enumerate not-available as -99;
+                enumerate Down as -30;
+                enumerate Attempt as -25;
+                enumerate Init as -20;
+                enumerate 2-Way as -15;
+                enumerate Exstart as -10;
+                enumerate Exchange as -5;
+                enumerate Loading as 0;				
+                enumerate Full as 1;				
+            }
+            /*
+             * Anomaly detection logic.
+             */
+            trigger ospf-ipv6-neighbor-state {
+                alert-type routing.ospf.state.ospf-neighbor-state;
+                synopsis "ospf neigbor state kpi";
+                description "Sets health based on ospf neighbor state";
+                frequency 1offset;
+                /*
+                 * Sets color to green when ospf neighbor state is full
+                 */
+                term is-ipv6-neighbor-state-full {
+                    when {
+                        matches-with "$ospf-neighbor-state" Full;
+                    }
+                    then {
+                        status {
+                            color green;
+                            message "OSPF neighbor $neighbor-address state is $ospf-neighbor-state on $instance-name routing-instance";
+                        }
+                    }
+                }
+                /*
+                 * Defaults color to red.
+                 */
+                term ospf-ipv6-neighbor-state-notfull {
+                    when {
+                        does-not-match-with "$ospf-neighbor-state" Full;
+                    }
+                    then {
+                        status {
+                            color red;
+                            message "OSPF neighbor $neighbor-address state is $ospf-neighbor-state on $instance-name routing-instance";
+                        }
+                    }
+                }
+            }
+            variable ospf-interface-name {
+                value .*;
+                description "Enter the ospf ipv6 interface names to be monitored in the form of regex e.g. ge-0/0/0.1|xe-1/1/1.0";
+                type string;
+            }
+            variable ospf-neighbor-id {
+                value .*;
+                description "Enter ospf neighbor id to be monitored in the form of regex e.g. ::192:168:1:1|172.16.1.1";
+                type string;
+            }
+            variable instance-name {
+                value .*;
+                description "Enter instance name in the form of regex e.g. vpn1, master etc.";
+                type string;
+            }
+            variable ospf-neighbor-address {
+                value .*;
+                description "Enter ospf ipv6 neighbor address to be monitored in the form of regex";
+                type string;
+            }			
+            rule-properties {
+                version 2;
+                contributor juniper;
+                category basic;
+                is-scaling-rule {
+                    description "Fields:[ interface-name neighbor-id ] ; Directly impacted by number of interfaces and ospf neighbors running in each network device";
+                }
+                supported-healthbot-version 1.0.1;
+                supported-devices {
+                    juniper {
+                        operating-system junos {
+                            products MX {
+                                platforms MX204 {
+                                    releases 22.2R3 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms MX240 {
+                                    releases 22.2R3 {
+                                        release-support min-supported-release;
+                                    }
+                                }								
+                                platforms MX304 {
+                                    releases 22.2R3 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms MX480 {
+                                    releases 22.2R3 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms MX960 {
+                                    releases 22.2R3 {
+                                        release-support min-supported-release;
+                                    }
+                                }								
+                                platforms MX10004 {
+                                    releases 22.3R1 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms MX10008 {
+                                    releases 22.3R1 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms MX10016 {
+                                    releases 22.3R1 {
+                                        release-support min-supported-release;
+                                    }
+                                }								
+                            }
+                        }
+                        operating-system junosEvolved {
+                            products ACX {
+                                platforms ACX7024 {
+                                    releases 22.3R1 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms ACX7024X {
+                                    releases 22.3R1 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms ACX7100 {
+                                    releases 22.3R1 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms ACX7509 {
+                                    releases 22.3R1 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms ACX7348 {
+                                    releases 22.3R1 {
+                                        release-support min-supported-release;
+                                    }
+                                }								
+                            }
+                        }						
+                    }
+                }
+                helper-files other {
+                    list-of-files OspfNeighborStatsTable.yml;
+                }
+            }
+        }
+    }
+}
