@@ -31,6 +31,7 @@ healthbot {
             field instance-interface-status {
                 reference {
                     path "/device-group[device-group-name={{pe-device-group}}]/device[device-id={{pe-device-name}}]/topic[topic-name='interfaces']/rule[rule-name=check-ifl-state]/field[sub-interface-index='{{pe-ifl-number}}' and interface-name='{{pe-interface-name}}']/ifl-oper-status";
+                    time-range 278s;					
                 }
                 type string;
                 description "Routing instance interface status";
@@ -69,7 +70,7 @@ healthbot {
                     data-if-missing {
                         value DOWN;
                     }
-                    time-range 185s;
+                    time-range 278s;
                 }
                 type string;
                 description "VRF peer state";
@@ -84,6 +85,7 @@ healthbot {
                 enumerate Full as 1;
             }
             trigger l3vpn-pe-interface-state {
+                alert-type vpn.l3vpn.state.l3vpn-pe-interface-state;			
                 frequency 1offset;
                 term is-pe-interface-up {
                     when {
@@ -113,6 +115,7 @@ healthbot {
                 }
             }
             trigger l3vpn-state {
+                alert-type vpn.l3vpn.state.l3vpn-state;			
                 synopsis "L3VPN session status KPI";
                 description "Sets health based on state change in L3VPN peer and PE interface state.";
                 frequency 1offset;
