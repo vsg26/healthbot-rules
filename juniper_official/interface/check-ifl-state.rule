@@ -189,7 +189,7 @@ healthbot {
                     }
                 }
             }
-            trigger sub-nterface-input-traffic {
+            trigger sub-interface-input-traffic {
                 alert-type interfaces.rx.traffic.interface-input-traffic;
                 synopsis "Sub interface input traffic kpi";
                 description "Sets health based on input traffic exceed threshold";
@@ -242,7 +242,7 @@ healthbot {
                     }
                 }
             }
-            trigger sub-nterface-output-traffic {
+            trigger sub-interface-output-traffic {
                 alert-type interfaces.tx.traffic.interface-output-traffic;
                 synopsis "Subinterface output traffic kpi";
                 description "Sets health based on output traffic exceed threshold";
