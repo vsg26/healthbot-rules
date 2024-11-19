@@ -5,7 +5,7 @@
  healthbot {
     topic routing.bgp {
         rule check-bgp-neighbor-prefixes {
-            keys [ address-family peer-address ];
+            keys [ address-family peer-address instance-name ];
             synopsis "BGP neighbor prefix collector";
             description "Collects BGP neighbor advertised and received prefix count periodically to plot the data";
             sensor bgp-netconf {
