@@ -69,7 +69,7 @@ healthbot {
             }
             field vpn-state {
                 reference {
-                    path "/device-group[device-group-name={{pe-device-group}}]/device[device-id={{pe-device-name}}]/topic[topic-name='routing.bgp']/rule[rule-name=check-bgp-neighbor-stats]/field[peer-address='{{customer-neighbor-address}}']/peer-state";
+                    path "/device-group[device-group-name={{pe-device-group}}]/device[device-id={{pe-device-name}}]/topic[topic-name='routing.bgp']/rule[rule-name=check-bgp-neighbor-stats]/field[peer-address='{{customer-neighbor-address}}' and instance-name='{{customer-vpn-name}}']/peer-state";
                 }
                 type string;
                 description "VRF peer state";

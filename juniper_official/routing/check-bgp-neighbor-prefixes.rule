@@ -23,6 +23,18 @@
                     frequency 60s;
                 }
             }
+            field instance-name {
+                sensor bgp-netconf {
+                    where "peer-cfg-rti =~ /{{routing-instance-name}}/";
+                    path peer-cfg-rti;
+                }
+                sensor bgp-oc{
+                    where "/network-instances/network-instance/@name =~ /{{routing-instance-name}}/";
+                    path "/network-instances/network-instance/@name";
+                }
+                type string;
+                description "To find neighbor's routing instance name";
+            }
             field address-family {
                 sensor bgp-netconf {
                     where "name =~ /{{address-table-var}}/";
@@ -166,6 +178,11 @@
                 value .*;
                 description "Address table specific routes, regular expression, e.g. 'IPV4_UNICAST'";
                 type string;
+            }
+            variable routing-instance-name {
+                value .*;
+                type string;
+                description "Routing instance specific neighbors, regular expression, e.g. 'master'";
             }
             variable neighbors {
                 value .*;
