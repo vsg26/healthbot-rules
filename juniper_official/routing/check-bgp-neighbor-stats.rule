@@ -5,7 +5,7 @@
  healthbot {
     topic routing.bgp {
         rule check-bgp-neighbor-stats {
-            keys peer-address;
+            keys [peer-address instance-name];
             synopsis "BGP neighbor statistics analyzer";
             description "Monitors BGP neighbor status and flap count periodically and notifies anomaly";
             sensor bgp-netconf {
@@ -22,6 +22,18 @@
                     sensor-name /network-instances/network-instance/protocols/protocol/bgp/neighbors;
                     frequency 60s;
                 }
+            }
+            field instance-name {
+                sensor bgp-netconf {
+                    where "peer-cfg-rti =~ /{{routing-instance-name}}/";
+                    path peer-cfg-rti;
+                }
+                sensor bgp-oc{
+                    where "/network-instances/network-instance/@name =~ /{{routing-instance-name}}/";
+                    path "/network-instances/network-instance/@name";
+                }
+                type string;
+                description "Routing instance to find neighbor's parent instance";
             }
             field flap-count {
                 sensor bgp-netconf {
@@ -144,6 +156,11 @@
                         }
                     }
                 }
+            }
+            variable routing-instance-name {
+                value .*;
+                type string;
+                description "Routing instance specific neighbors, regular expression, e.g. 'master'";
             }
             variable flaps-threshold {
                 value 1;
