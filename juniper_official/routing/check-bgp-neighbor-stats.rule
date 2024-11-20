@@ -5,7 +5,7 @@
  healthbot {
     topic routing.bgp {
         rule check-bgp-neighbor-stats {
-            keys peer-address;
+            keys [peer-address instance-name];
             synopsis "BGP neighbor statistics analyzer";
             description "Monitors BGP neighbor status and flap count periodically and notifies anomaly";
             sensor bgp-netconf {
@@ -22,6 +22,18 @@
                     sensor-name /network-instances/network-instance/protocols/protocol/bgp/neighbors;
                     frequency 60s;
                 }
+            }
+            field instance-name {
+                sensor bgp-netconf {
+                    where "peer-cfg-rti =~ /{{routing-instance-name}}/";
+                    path peer-cfg-rti;
+                }
+                sensor bgp-oc{
+                    where "/network-instances/network-instance/@name =~ /{{routing-instance-name}}/";
+                    path "/network-instances/network-instance/@name";
+                }
+                type string;
+                description "To find neighbor's routing instance name";
             }
             field flap-count {
                 sensor bgp-netconf {
@@ -145,6 +157,11 @@
                     }
                 }
             }
+            variable routing-instance-name {
+                value .*;
+                type string;
+                description "Routing instance specific neighbors, regular expression, e.g. 'master'";
+            }
             variable flaps-threshold {
                 value 1;
                 description "BGP neighbor session flaps threshold: Number of flap increase between metrics, before we report anomaly";
@@ -167,37 +184,29 @@
                     sensors bgp-oc;
                     juniper {
                         operating-system junos {
-                            products EX {
-                                platforms All {
-                                    releases 15.1R1 {
-                                        release-support min-supported-release;
-                                    }
-                                }
-                            }
                             products MX {
-                                platforms All {
-                                    releases 15.1R1 {
+                                platforms MX204 {
+                                    releases 22.2R3 {
                                         release-support min-supported-release;
                                     }
                                 }
-                            }
-                            products PTX {
-                                platforms All {
-                                    releases 15.1R1 {
+                                platforms MX240 {
+                                    releases 22.2R3 {
                                         release-support min-supported-release;
                                     }
                                 }
-                            }
-                            products QFX {
-                                platforms All {
-                                    releases 15.1R1 {
+                                platforms MX304 {
+                                    releases 22.2R3 {
                                         release-support min-supported-release;
                                     }
                                 }
-                            }
-                            products ACX {
-                                platforms All {
-                                    releases 22.1R1 {
+                                platforms MX480 {
+                                    releases 22.2R3 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms MX960 {
+                                    releases 22.2R3 {
                                         release-support min-supported-release;
                                     }
                                 }
@@ -205,13 +214,45 @@
                         }
                         operating-system junosEvolved {
                             products ACX {
-                                platforms All {
-                                    releases 22.3R1 {
+                                platforms ACX7100-32C {
+                                    releases 23.2R2 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms ACX7100-48L {
+                                    releases 23.2R2 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms ACX7509 {
+                                    releases 23.2R2 {
                                         release-support min-supported-release;
                                     }
                                 }
                             }
-                        }						
+                            products PTX {
+                                platforms PTX10001-36MR {
+                                    releases 23.2R2 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms PTX10004 {
+                                    releases 23.2R2 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                                platforms PTX10008 {
+                                    releases 23.2R2 {
+                                        release-support min-supported-release;
+                                    }
+                                }								
+                                platforms PTX10016 {
+                                    releases 23.2R2 {
+                                        release-support min-supported-release;
+                                    }
+                                }								
+                            }
+                        }
                     }
                 }
             }
