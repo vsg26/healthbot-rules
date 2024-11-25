@@ -451,7 +451,15 @@ healthbot {
                                         release-support min-supported-release;
                                     }
                                 }								
-                            }							
+                            }
+                            products EX {
+                                sensors components-oc-junos;
+                                platforms EX9204 {
+                                    releases 22.4R2.8 {
+                                        release-support min-supported-release;
+                                    }
+                                }
+                            }								
                         }
                     }
                 }
