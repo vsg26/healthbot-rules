@@ -39,7 +39,7 @@
             }
             field level-number {
                 sensor isis-oc {
-                    where "/network-instances/network-instance/protocols/protocol/isis/interfaces/interface/levels/level/@level-number =~ /{{level-numb}}/";
+                    where "/network-instances/network-instance/protocols/protocol/isis/interfaces/interface/levels/level/@level-number =~ /{{level-number}}/";
                     path "/network-instances/network-instance/protocols/protocol/isis/interfaces/interface/levels/level/@level-number";
                 }
                 type string;
