@@ -12,7 +12,7 @@
             	synopsis "ISIS open-config sensor definition";
                 description "Open-config sensor to collect telemetry data from network device";
                 open-config {
-                    sensor-name /network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/;
+                    sensor-name /network-instances/network-instance/protocols/protocol/isis/levels/level/system-level-counters/;
                     frequency 60s;
                 }
             }			

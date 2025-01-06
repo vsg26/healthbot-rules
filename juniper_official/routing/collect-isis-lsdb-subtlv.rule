@@ -57,7 +57,7 @@
             }
             field ipv4-ext-prefix {
                 sensor isis-oc {
-                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/extended-ipv4-reachability/prefixes/prefix/state/prefix";
+                    path "/network-instances/network-instance/protocols/protocol/isis/levels/level/link-state-database/lsp/tlvs/tlv/extended-ipv4-reachability/prefixes/prefix/@prefix";
                 }
                 type string;
                 description "ipv4-ext-prefix from lsdb path";
